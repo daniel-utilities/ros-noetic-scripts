@@ -1,2 +1,2 @@
-# template-vscode-project
-Project template containing a basic VS Code setup
+# ros-noetic-scripts
+Scripts for managing a ROS-1 Noetic install
