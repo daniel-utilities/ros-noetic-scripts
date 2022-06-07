@@ -1,0 +1,16 @@
+# ROS PARAMETERS
+export ROS_DISTRO="noetic"
+export ROS_PYTHON_VERSION="3"
+export ROS_OS_OVERRIDE="debian:buster"
+export ROS_INSTALL_PATH="/opt/ros/$ROS_DISTRO"
+export ROS_HOME="$HOME/.ros"
+export ROS_LOG_DIR="$HOME/.ros/log"
+export ROS_PARALLEL_JOBS="-j2 -l4"
+export ROS_REPOSITORY="http://packages.ros.org/ros/ubuntu buster main"
+
+# NETWORK LOCATION OF THE ROS MASTER SERVER
+# To run the server on this device, use $HOSTNAME
+export ROS_MASTER_URI="http://$HOSTNAME:11311"
+
+# DEFAULT CATKIN WORKSPACE
+export DEFAULT_CATKIN_WS="$HOME/my_catkin_ws"
