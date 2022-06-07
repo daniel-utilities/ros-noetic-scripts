@@ -6,7 +6,7 @@ if [[ ! -f "$CONFIG" ]]; then
     echo "ERROR: Must provide a valid rosconfig file."
     echo "Usage:"
     echo "  install-config.sh \"ROSCONFIG_FILE\""
-    exit
+    exit 1
 fi
 
 # Set ROS configuration

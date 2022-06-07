@@ -10,7 +10,7 @@ if [ -d "$HOME/Downloads" ]; then DOWNLOAD_DIR="$HOME/Downloads"; fi
 if [ "$EUID" -eq 0 ]; then
     echo "ERROR: Script cannot be run with sudo."
     echo "Please rerun script without root privileges."
-    exit
+    exit 1
 fi
 
 # Check package file is valid
@@ -25,19 +25,20 @@ if [[ "$PACKAGE_FILE" == "" ]]; then
     echo
     echo "Usage:"
     echo "  ./install.sh \"path/to/package_file\""
-    exit
+    exit 1
 fi
 
 source "$PACKAGE_FILE"
 
 if [[ "$ROS_PACKAGES" == "" ]]; then
     echo "ERROR: Invalid package file \"$PACKAGE_FILE\""
-    echo "Package file must assign a space-separated list of ROS packages to the \$ROS_PACKAGES environment variable."
+    echo "Package file must assign a list of ROS packages to the \$ROS_PACKAGES environment variable."
     echo
     echo "Usage:"
     echo "  ./install.sh \"path/to/package_file\""
-    exit
+    exit 1
 fi
+
 
 # Get device identity
 cd "$SCRIPT_DIR"
@@ -46,7 +47,7 @@ echo "Checking device type..."
 chmod +x "./identify-device.sh" && source "./identify-device.sh"
 if [[ "$IDENTITY" == "" ]]; then
     echo "Device is not a supported type."
-    exit
+    exit 1
 fi
 echo "IDENTITY set to $IDENTITY"
 
@@ -123,7 +124,7 @@ echo
 read -r -p "Continue with install? (Y/N): " 
 echo
 if [[ ! $REPLY =~ ^[Yy]$ ]]; then
-    exit
+    exit 1
 fi
 
 source "$HOME/.profile"
@@ -154,18 +155,21 @@ if [[ "$IDENTITY" == *"raspi"* ]]; then
     mkdir -p "$CATKIN_WS"
     cd "$CATKIN_WS"
 
+    # Make sure ROS_PACKAGES has spaces and not newlines
+    ROS_PACKAGES="$(echo "$ROS_PACKAGES" | tr '\n' ' ')"
+
     chmod +x "$SCRIPT_DIR/rosinstall-generator.sh" && "$SCRIPT_DIR/rosinstall-generator.sh" "$ROS_PACKAGES"
     chmod +x "$SCRIPT_DIR/rosdep-install.sh" && "$SCRIPT_DIR/rosdep-install.sh"
     chmod +x "$SCRIPT_DIR/ros-build.sh" && "$SCRIPT_DIR/ros-build.sh"
 
 else
     # Convert list of ROS packages to the equivalent APT packages
-    chmod +x "$SCRIPT_DIR/ros-to-apt.sh" && source "$SCRIPT_DIR/ros-to-apt.sh" "$ROS_PACKAGES"
+    chmod +x "$SCRIPT_DIR/ros-to-apt.sh" && APT_PACKAGES="$("$SCRIPT_DIR/ros-to-apt.sh" "$ROS_PACKAGES")"
     echo
     echo "Attempting to download the following APT packages: "
     echo "$APT_PACKAGES"
     echo
-    sudo apt-get -y install $APT_PACKAGES
+    sudo apt-get -y install --install-recommends $APT_PACKAGES
 
 fi
 

@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
 if [ ! -d "./src" ]; then
-    echo "ERROR: No source directory"
-    exit
+    echo "ERROR: No ./src directory"
+    exit 1
 fi
 
 sudo apt-get update

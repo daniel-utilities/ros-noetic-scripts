@@ -8,7 +8,7 @@ KEYRING_FILE="/usr/share/keyrings/ros-keyring.gpg"
 if [[ "$REPO" == "" ]]; then
     echo "ERROR: valid repo must be provided."
     echo "Please set environment variable ROS_REPOSITORY."
-    exit
+    exit 1
 fi
 
 sudo mkdir -p "$(dirname "$KEYRING_FILE")"
@@ -76,7 +76,7 @@ while [[ "$PYTHON_GOOD" != "true" ]]; do
         read -r -p "Continue with install? (Y/N): " 
         echo
         if [[ ! $REPLY =~ ^[Yy]$ ]]; then
-            exit
+            exit 1
         fi
     fi
 done

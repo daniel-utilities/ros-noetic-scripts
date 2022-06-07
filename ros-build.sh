@@ -4,12 +4,12 @@ BUILD_TOOL="./src/catkin/bin/catkin_make_isolated"
 
 if [ ! -d "./src" ]; then
     echo "ERROR: No src directory"
-    exit
+    exit 1
 fi
 
 if [ ! -f "$BUILD_TOOL" ]; then
     echo "ERROR: No build tool \"$BUILD_TOOL\""
-    exit
+    exit 1
 fi
 
 source "$HOME/.profile"
