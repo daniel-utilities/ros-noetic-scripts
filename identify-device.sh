@@ -57,7 +57,23 @@ if [[ "$IDENTITY" == "" ]]; then
 fi
 
 if [[ "$IDENTITY" == "" ]]; then
+    ID="raspbian"
+    VERSION_ID="11"
+    MODEL="Raspberry Pi 4"
+    verify_device_info "$ID" "$VERSION_ID" "$MODEL"
+    [[ "$DEVICE" != "" ]] && IDENTITY="raspi4"
+fi
+
+if [[ "$IDENTITY" == "" ]]; then
     ID="debian"
+    VERSION_ID="11"
+    MODEL="Raspberry Pi 3"
+    verify_device_info "$ID" "$VERSION_ID" "$MODEL"
+    [[ "$DEVICE" != "" ]] && IDENTITY="raspi3"
+fi
+
+if [[ "$IDENTITY" == "" ]]; then
+    ID="raspbian"
     VERSION_ID="11"
     MODEL="Raspberry Pi 3"
     verify_device_info "$ID" "$VERSION_ID" "$MODEL"
@@ -73,7 +89,15 @@ if [[ "$IDENTITY" == "" ]]; then
 fi
 
 if [[ "$IDENTITY" == "" ]]; then
-    ID="debian"
+    ID="raspbian"
+    VERSION_ID="11"
+    MODEL="Raspberry Pi 2"
+    verify_device_info "$ID" "$VERSION_ID" "$MODEL"
+    [[ "$DEVICE" != "" ]] && IDENTITY="raspi2"
+fi
+
+if [[ "$IDENTITY" == "" ]]; then
+    ID="raspbian"
     VERSION_ID="11"
     MODEL="Raspberry Pi"
     verify_device_info "$ID" "$VERSION_ID" "$MODEL"
