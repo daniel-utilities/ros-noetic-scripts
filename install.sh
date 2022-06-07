@@ -141,6 +141,7 @@ cd "$SCRIPT_DIR"
 echo
 echo "Initializing ROSDEP..."
 echo
+sudo rm /etc/ros/rosdep/sources.list.d/*
 sudo rosdep init
 chmod +x "./rosdep-update.sh" && "./rosdep-update.sh"
 
