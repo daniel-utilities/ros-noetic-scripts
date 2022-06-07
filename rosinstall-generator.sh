@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+WORKING_DIR="$PWD"
+SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 
 PACKAGES="$1"
 ROSINSTALL_CONFIG="ros-noetic.rosinstall"
@@ -18,21 +20,5 @@ echo "$PACKAGES"
 rosinstall_generator --rosdistro=$ROS_DISTRO --deps --wet-only --tar $PACKAGES > "./$ROSINSTALL_CONFIG"
 
 # Download packages
-echo "Downloading source code..."
+echo "Downloading source code into ./src..."
 vcs import --input "./$ROSINSTALL_CONFIG" --workers 2 "./src"
-
-# Install missing system dependencies
-# Attempt to find dep keys using the actual OS first; then, if an override is provided, use that to fill in the gaps.
-sudo apt-get update
-rosdep install --from-paths "./src" --ignore-packages-from-source --rosdistro=$ROS_DISTRO -y -r
-if [ -z ${ROS_OS_OVERRIDE+x} ]; then
-    rosdep install --from-paths "./src" --ignore-packages-from-source --rosdistro=$ROS_DISTRO --os=$ROS_OS_OVERRIDE -y -r
-fi
-
-# Build and install
-sudo python3 "./src/catkin/bin/catkin_make_isolated"    \
-        --install                                       \
-        --install-space "$ROS_INSTALL_PATH"             \
-        -DCMAKE_BUILD_TYPE=Release                      \
-        -DBUILD_TESTING=OFF                             \
-        $ROS_PARALLEL_JOBS

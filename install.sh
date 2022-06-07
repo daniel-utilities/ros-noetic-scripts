@@ -2,6 +2,7 @@
 WORKING_DIR="$PWD"
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 CONFIG_DIR="$SCRIPT_DIR/config"
+PACKAGES_DIR="$SCRIPT_DIR/packages"
 DOWNLOAD_DIR="$HOME/downloads"
 if [ -d "$HOME/Downloads" ]; then DOWNLOAD_DIR="$HOME/Downloads"; fi
 
@@ -12,7 +13,31 @@ if [ "$EUID" -eq 0 ]; then
     exit
 fi
 
-# Check that packages have already been
+# Check package file is valid
+PACKAGE_FILE="$1"
+if [[ "$PACKAGE_FILE" == "" ]]; then
+    echo "ERROR: Must provide a package file."
+    echo "Package file must assign a space-separated list of ROS packages to the \$ROS_PACKAGES environment variable."
+    echo "Packages will be installed using APT if possible, or from source if not."
+    echo "You can use one of the following pre-configured package files, or create a new one:"
+    echo "$PACKAGES_DIR/"
+    ls "$PACKAGES_DIR"
+    echo
+    echo "Usage:"
+    echo "  ./install.sh \"path/to/package_file\""
+    exit
+fi
+
+source "$PACKAGE_FILE"
+
+if [[ "$ROS_PACKAGES" == "" ]]; then
+    echo "ERROR: Invalid package file \"$PACKAGE_FILE\""
+    echo "Package file must assign a space-separated list of ROS packages to the \$ROS_PACKAGES environment variable."
+    echo
+    echo "Usage:"
+    echo "  ./install.sh \"path/to/package_file\""
+    exit
+fi
 
 # Get device identity
 cd "$SCRIPT_DIR"
@@ -88,7 +113,10 @@ echo
 echo "The installer is now ready to install ROS."
 echo "Please ensure ~/.profile and ~/.rosconfig are configured correctly for your device before continuing."
 echo
-echo "If this is a Raspberry Pi, ROS must be installed from source. This will take a long time."
+echo "The following ROS packages will be installed:"
+echo "$ROS_PACKAGES"
+echo
+echo "If this is a Raspberry Pi, these packages must be installed from source. This will take a long time."
 echo 
 echo "The remainder of the script can be left unattended."
 echo
@@ -113,7 +141,7 @@ echo
 echo "Initializing ROSDEP..."
 echo
 sudo rosdep init
-chmod +x "./update-rosdep.sh" && "./update-rosdep.sh"
+chmod +x "./rosdep-update.sh" && "./rosdep-update.sh"
 
 # Finally begin ROS install
 # Raspberry Pi must be installed from source
@@ -122,17 +150,22 @@ if [[ "$IDENTITY" == *"raspi"* ]]; then
     CATKIN_WS="$DOWNLOAD_DIR/rosinstall_catkin_ws"
     echo
     echo "Creating ROS installation space in \"$CATKIN_WS\" ..."
+    echo
     mkdir -p "$CATKIN_WS"
     cd "$CATKIN_WS"
 
     chmod +x "$SCRIPT_DIR/rosinstall-generator.sh" && "$SCRIPT_DIR/rosinstall-generator.sh" "$ROS_PACKAGES"
+    chmod +x "$SCRIPT_DIR/rosdep-install.sh" && "$SCRIPT_DIR/rosdep-install.sh"
+    chmod +x "$SCRIPT_DIR/ros-build.sh" && "$SCRIPT_DIR/ros-build.sh"
 
 else
+    # Convert list of ROS packages to the equivalent APT packages
+    chmod +x "$SCRIPT_DIR/ros-to-apt.sh" && source "$SCRIPT_DIR/ros-to-apt.sh" "$ROS_PACKAGES"
     echo
-    echo "Attempting to download the following packages: "
-    echo "$ROS_PACKAGES"
+    echo "Attempting to download the following APT packages: "
+    echo "$APT_PACKAGES"
     echo
-    sudo apt-get -y install $ROS_PACKAGES
+    sudo apt-get -y install $APT_PACKAGES
 
 fi
 
