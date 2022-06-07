@@ -101,11 +101,11 @@ fi
 cd "$SCRIPT_DIR"
 CONFIG_FILE="rosconfig-$IDENTITY"
 echo
-echo "Selected configuration file $CONFIG_FILE for this device."
+echo "Selected configuration file \"$CONFIG_DIR/$CONFIG_FILE\" for this device."
 echo
 read -r -p "Overwrite ~/.rosconfig? (Y/N): " 
 echo
-if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+if [[ $REPLY =~ ^[Yy]$ ]]; then
     chmod +x "./install-config.sh" && "./install-config.sh" "$CONFIG_DIR/$CONFIG_FILE"
 fi
 
