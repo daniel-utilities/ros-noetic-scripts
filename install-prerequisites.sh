@@ -49,6 +49,7 @@ sudo apt-get install -y gcc g++ build-essential cmake \
                         python3 python3-pip python3-venv \
                         python3-rosdep python3-rosinstall python3-rosinstall-generator \
                         python3-vcstool python3-wstool python3-catkin-tools
+sudo pip3 install setuptools==59.8.0
 
 PYTHON_GOOD="false"
 while [[ "$PYTHON_GOOD" != "true" ]]; do

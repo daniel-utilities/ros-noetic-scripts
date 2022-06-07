@@ -5,6 +5,14 @@ CONFIG_DIR="$SCRIPT_DIR/config"
 DOWNLOAD_DIR="$HOME/downloads"
 if [ -d "$HOME/Downloads" ]; then DOWNLOAD_DIR="$HOME/Downloads"; fi
 
+# Check for sudo
+if [ "$EUID" -eq 0 ]; then
+    echo "ERROR: Script cannot be run with sudo."
+    echo "Please rerun script without root privileges."
+    exit
+fi
+
+# Check that packages have already been
 
 # Get device identity
 cd "$SCRIPT_DIR"
@@ -47,6 +55,7 @@ if [[ "$IDENTITY" == "raspi4" ]]; then
 fi
 
 # Install ccache
+cd "$SCRIPT_DIR"
 echo
 echo "CCache reduces build time in large projects."
 echo
@@ -74,10 +83,14 @@ if [[ ! $REPLY =~ ^[Yy]$ ]]; then
     chmod +x "./install-config.sh" && "./install-config.sh" "$CONFIG_DIR/$CONFIG_FILE"
 fi
 
-source "$HOME/.profile"
-
+# Pre-install warning
 echo
-echo "Please ensure ~/.profile and ~/.rosconfig are suitable for your device before continuing."
+echo "The installer is now ready to install ROS."
+echo "Please ensure ~/.profile and ~/.rosconfig are configured correctly for your device before continuing."
+echo
+echo "If this is a Raspberry Pi, ROS must be installed from source. This will take a long time."
+echo 
+echo "The remainder of the script can be left unattended."
 echo
 read -r -p "Continue with install? (Y/N): " 
 echo
@@ -85,31 +98,50 @@ if [[ ! $REPLY =~ ^[Yy]$ ]]; then
     exit
 fi
 
-
+source "$HOME/.profile"
 
 # Download and install ROS prerequisites
 cd "$SCRIPT_DIR"
+echo
+echo "Downloading prerequisites..."
+echo
 chmod +x "./install-prerequisites.sh" && "./install-prerequisites.sh"
 
 # ROSDEP
+cd "$SCRIPT_DIR"
+echo
 echo "Initializing ROSDEP..."
+echo
 sudo rosdep init
-rosdep --rosdistro=$ROS_DISTRO --os=$ROS_OS_OVERRIDE update
+chmod +x "./update-rosdep.sh" && "./update-rosdep.sh"
 
-# Create installation space
-if [ -d "$HOME/Downloads" ]; then
-    echo "Creating ROS installation space in ~/Downloads..."
-    mkdir -p "$HOME/Downloads/rosinstall-catkin-ws"
-    cd "$HOME/Downloads/rosinstall-catkin-ws";
+# Finally begin ROS install
+# Raspberry Pi must be installed from source
+# All other devices will attempt to use the package manager
+if [[ "$IDENTITY" == *"raspi"* ]]; then
+    CATKIN_WS="$DOWNLOAD_DIR/rosinstall_catkin_ws"
+    echo
+    echo "Creating ROS installation space in \"$CATKIN_WS\" ..."
+    mkdir -p "$CATKIN_WS"
+    cd "$CATKIN_WS"
+
+    chmod +x "$SCRIPT_DIR/rosinstall-generator.sh" && "$SCRIPT_DIR/rosinstall-generator.sh" "$ROS_PACKAGES"
+
 else
-    echo "Creating ROS installation space in ~/downloads..."
-    mkdir -p "$HOME/downloads/rosinstall-catkin-ws"
-    cd "$HOME/downloads/rosinstall-catkin-ws";
+    echo
+    echo "Attempting to download the following packages: "
+    echo "$ROS_PACKAGES"
+    echo
+    sudo apt-get -y install $ROS_PACKAGES
+
 fi
 
-# Generate install files
-rosinstall_generator --rosdistro=$ROS_DISTRO --deps --wet-only --tar PACKAGES > noetic-config.rosinstall
-
-
+# Post-install tasks
+echo
+echo "ROS install script complete."
+echo "Test ROS installation by running:"
+echo "  source ~/.profile"
+echo "roscore"
+echo
 
 cd "$WORKING_DIR"
