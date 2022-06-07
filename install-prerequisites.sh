@@ -37,7 +37,7 @@ file "$KEYRING_FILE"
 #         --output "/usr/share/keyrings/ros-keyring.gpg"
 
 # Create sources file so APT can see it
-sudo rm /etc/apt/sources.list.d/ros-*.list
+sudo rm /etc/apt/sources.list.d/ros*.list
 echo "Installing ROS keyring..."
 LINE="deb [signed-by=$KEYRING_FILE] $REPO"
 FILE="/etc/apt/sources.list.d/ros-latest.list"
