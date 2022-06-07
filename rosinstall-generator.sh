@@ -21,4 +21,5 @@ rosinstall_generator --rosdistro=$ROS_DISTRO --deps --wet-only --tar $ROS_PACKAG
 
 # Download packages
 echo "Downloading source code into ./src..."
+mkdir -p "./src"
 vcs import --input "./$ROSINSTALL_CONFIG" --workers 2 "./src"
