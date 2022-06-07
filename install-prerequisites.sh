@@ -37,6 +37,7 @@ file "$KEYRING_FILE"
 #         --output "/usr/share/keyrings/ros-keyring.gpg"
 
 # Create sources file so APT can see it
+sudo rm /etc/apt/sources.list.d/ros-*.list
 echo "Installing ROS keyring..."
 LINE="deb [signed-by=$KEYRING_FILE] $REPO"
 FILE="/etc/apt/sources.list.d/ros-latest.list"
@@ -51,6 +52,7 @@ sudo apt-get install -y gcc g++ build-essential cmake \
                         python3-vcstool python3-wstool python3-catkin-tools
 sudo pip3 install setuptools==59.8.0
 
+# Check python is python3
 PYTHON_GOOD="false"
 while [[ "$PYTHON_GOOD" != "true" ]]; do
     PYTHONVERSION=$(python --version)
