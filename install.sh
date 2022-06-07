@@ -177,7 +177,9 @@ fi
 # Post-install tasks
 echo
 echo "ROS install script complete."
-echo "Test ROS installation by running:"
+echo "Please restart your device."
+echo
+echo "Then, test ROS installation by running:"
 echo "  source ~/.profile"
 echo "roscore"
 echo
