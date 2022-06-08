@@ -1,7 +1,4 @@
 #!/usr/bin/env bash
-WORKING_DIR="$PWD"
-SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
-
 ROS_PACKAGES="$1"
 ROSINSTALL_CONFIG="ros-noetic.rosinstall"
 

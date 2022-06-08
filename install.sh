@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 WORKING_DIR="$PWD"
-SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+SCRIPT_DIR="$(dirname "$(readlink -f "$0")")"
 CONFIG_DIR="$SCRIPT_DIR/config"
 PACKAGES_DIR="$SCRIPT_DIR/packages"
 DOWNLOAD_DIR="$HOME/downloads"
