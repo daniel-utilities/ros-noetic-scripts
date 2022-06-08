@@ -11,6 +11,7 @@ fi
 source "$HOME/.rosconfig"
 
 # Replace all _ with - then split the string into an array
+ROS_PACKAGES="$(echo "$ROS_PACKAGES" | tr '_' '-')"
 split(){ arr=( $ROS_PACKAGES ); }
 IFS=$'\n' split
 
