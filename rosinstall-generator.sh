@@ -17,7 +17,7 @@ source "$HOME/.profile"
 # Generate install configuration
 echo "Generating rosinstall configuration for the following packages:"
 echo "$ROS_PACKAGES"
-rosinstall_generator --rosdistro=$ROS_DISTRO --deps --wet-only --tar $ROS_PACKAGES > "./$ROSINSTALL_CONFIG"
+rosinstall_generator --rosdistro=$ROS_DISTRO --deps --exclude RPP --wet-only --tar $ROS_PACKAGES > "./$ROSINSTALL_CONFIG"
 
 # Download packages
 echo "Downloading source code into ./src..."
