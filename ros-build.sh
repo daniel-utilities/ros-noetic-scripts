@@ -12,7 +12,7 @@ if [ ! -f "$BUILD_TOOL" ]; then
     exit 1
 fi
 
-source "$HOME/.profile"
+source "$HOME/.rosconfig"
 
 # Build and install
 echo

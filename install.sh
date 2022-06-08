@@ -127,7 +127,7 @@ if [[ ! $REPLY =~ ^[Yy]$ ]]; then
     exit 1
 fi
 
-source "$HOME/.profile"
+source "$HOME/.rosconfig"
 
 # Download and install ROS prerequisites
 cd "$SCRIPT_DIR"
@@ -180,8 +180,7 @@ echo "ROS install script complete."
 echo "Please restart your device."
 echo
 echo "Then, test ROS installation by running:"
-echo "  source ~/.profile"
-echo "roscore"
+echo "  roscore"
 echo
 
 cd "$WORKING_DIR"

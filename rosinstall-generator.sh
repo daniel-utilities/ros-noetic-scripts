@@ -12,7 +12,7 @@ if [[ "$ROS_PACKAGES" == "" ]]; then
     exit 1
 fi
 
-source "$HOME/.profile"
+source "$HOME/.rosconfig"
 
 # Generate install configuration
 echo "Generating rosinstall configuration for the following packages:"

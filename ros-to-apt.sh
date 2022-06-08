@@ -8,10 +8,11 @@ if [[ "$ROS_PACKAGES" == "" ]]; then
     exit 1
 fi
 
-source "$HOME/.profile"
+source "$HOME/.rosconfig"
 
 # Replace all _ with - then split the string into an array
-IFS=' ' read -a arr <<< "$(echo "$ROS_PACKAGES" | tr '_' '-' | tr '\n' ' ')"
+split(){ arr=( $ROS_PACKAGES ); }
+IFS=$'\n' split
 
 # Reconstruct the array, adding the prefix to each item
 APT_PACKAGES=""
