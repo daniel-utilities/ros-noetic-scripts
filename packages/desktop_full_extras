@@ -27,5 +27,4 @@ teleop_tools
 urdfdom_py
 urdf_geometry_parser
 warehouse_ros
-warehouse_ros_mongo
 "
