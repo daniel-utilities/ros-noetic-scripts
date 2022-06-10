@@ -14,9 +14,9 @@ echo "Installing missing system dependencies..."
 echo
 rosdep install --from-paths "./src" --ignore-packages-from-source --rosdistro=$ROS_DISTRO -y -r
 
-if [ -z "$ROS_OS_OVERRIDE" ]; then
+if [ -n "$ROS_OS_OVERRIDE" ]; then
     echo
     echo "Retrying with ROS_OS_OVERRIDE=$ROS_OS_OVERRIDE..."
     echo
-    rosdep install --from-paths "./src" --ignore-packages-from-source --rosdistro=$ROS_DISTRO --os=$ROS_OS_OVERRIDE -y -r
+    rosdep install --from-paths "./src" --ignore-packages-from-source --rosdistro=$ROS_DISTRO --os=$ROS_OS_OVERRIDE -y
 fi
