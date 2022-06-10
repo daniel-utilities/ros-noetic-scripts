@@ -155,7 +155,8 @@ if [[ "$IDENTITY" == *"raspi"* ]]; then
     echo
     mkdir -p "$CATKIN_WS"
     cd "$CATKIN_WS"
-
+    sudo rm -rf "./src"
+    
     # Make sure ROS_PACKAGES has spaces and not newlines
     ROS_PACKAGES="$(echo "$ROS_PACKAGES" | tr '\n' ' ')"
 
